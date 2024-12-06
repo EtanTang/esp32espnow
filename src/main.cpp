@@ -9,6 +9,9 @@ uint32_t tickerCount = 0;
 
 extern void OTA_setup(void);
 
+extern void IMU_setup(void);
+extern void IMU_loop(void);
+
 
 void tickerCallback(void)
 {
@@ -23,6 +26,9 @@ void setup()
   Serial.println(WiFi.macAddress());
   
   ticker.attach_ms(10, tickerCallback);
+
+  IMU_setup();
+
   // Serial.println("Hello ota!");
   // OTA_setup();
 }
@@ -31,18 +37,20 @@ void loop() {
   // put your main code here, to run repeatedly:
   static uint32_t lastTime = 0;
 
-  if (lastTime != tickerCount && tickerCount % 1000 == 0)
+  if (lastTime != tickerCount && tickerCount % 100 == 0)
   {
     /* code */
     lastTime = tickerCount;
 
-    Serial.println(WiFi.macAddress());
+    // Serial.println(WiFi.macAddress());
     Serial.println(tickerCount);
-    // Serial.println("Hello ota!");
+    
+    IMU_loop();
   }
   else
   {
     /* code */
+    
   }
   
 }
