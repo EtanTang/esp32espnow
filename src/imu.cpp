@@ -25,6 +25,7 @@
   https://github.com/ElectronicCats/mpu6050/wiki
 
 */
+#if 0
 
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
@@ -271,3 +272,6 @@ void IMU_loop() {
 //   digitalWrite(LED_BUILTIN, blinkState);
   }
 }
+
+
+#endif
