@@ -95,7 +95,7 @@ void save_cofig(){
 }
 
 void OnDataReceived(const uint8_t *macAddr, const uint8_t *data, int dataLength) {
-  digitalWrite(13, !digitalRead(13));
+  // digitalWrite(13, !digitalRead(13));
   String receivedText;
   char text[dataLength+1];
   memcpy(text, (char *)data, dataLength);
@@ -110,6 +110,16 @@ void OnDataReceived(const uint8_t *macAddr, const uint8_t *data, int dataLength)
         for(int i = 0;i < 6 ; i++){
           rc_address[i] = macAddr[i];
         }
+        esp_now_peer_info_t peerInfo;
+        memcpy(peerInfo.peer_addr, rc_address, 6);
+        peerInfo.channel = 0;
+        peerInfo.encrypt = false;
+        peerInfo.ifidx = WIFI_IF_STA;
+        // Add peer        
+        if (esp_now_add_peer(&peerInfo) != ESP_OK)
+        {
+            Serial.println("Failed to add peer");
+        }        
         Serial.println("RC MATCHING CODES");
       }
     }
@@ -497,7 +507,15 @@ void PLN_loop()
             serializeJson(plane_order, plane_order_str);
             char order_data[plane_order_str.length() + 1];
             strcpy(order_data, plane_order_str.c_str());
-            esp_now_send(rc_address, (uint8_t *)&order_data, sizeof(order_data));
+            esp_err_t result = esp_now_send(rc_address, (uint8_t *)&order_data, sizeof(order_data));
+            if (result == ESP_OK)
+            {
+              Serial.println("plane_order_str message success: " + plane_order_str);
+              digitalWrite(13, !digitalRead(13));
+            }
+            else
+            {
+            }
         }
         else
         {
